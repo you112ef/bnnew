@@ -8,12 +8,16 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Database setup
-const db = new sqlite3.Database('./dish_agent.db', (err) => {
+const dbPath = process.env.DATABASE_PATH || './dish_agent.db';
+const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
   } else {
@@ -40,7 +44,13 @@ const upload = multer({ storage });
 
 // Routes
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Dish Agent Backend is running' });
+  res.json({ 
+    status: 'OK', 
+    message: 'Dish Agent Backend is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
+  });
 });
 
 app.post('/api/analyze', upload.single('image'), (req, res) => {
@@ -101,6 +111,18 @@ app.get('/api/analyses', (req, res) => {
   });
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({ 
+    error: process.env.NODE_ENV === 'production' 
+      ? 'Something went wrong!' 
+      : err.message 
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Dish Agent Backend server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`CORS origin: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
 });

@@ -206,9 +206,50 @@ CREATE TABLE analyses (
 );
 ```
 
-## 🔧 Configuration
+## 🚀 Deployment
+
+The Dish Agent platform is ready for production deployment using modern hosting services.
+
+### Quick Deployment
+
+1. **Automated Script**: Run the deployment helper
+   ```bash
+   ./deploy.sh
+   ```
+
+2. **Manual Deployment**: Follow the detailed guide
+   ```bash
+   # See DEPLOYMENT.md for complete instructions
+   ```
+
+### Hosting Recommendations
+
+- **Frontend**: Vercel (recommended) or Netlify
+- **Backend**: Heroku, Railway, or DigitalOcean App Platform
+- **Database**: SQLite (included) or PostgreSQL for production
+- **File Storage**: Local storage or AWS S3/Cloudinary
 
 ### Environment Variables
+
+Set these environment variables for production:
+
+**Backend (Heroku)**:
+```env
+NODE_ENV=production
+PORT=
+FRONTEND_URL=https://your-frontend-url.vercel.app
+```
+
+**Frontend (Vercel)**:
+```env
+VITE_API_URL=https://your-backend-url.herokuapp.com
+```
+
+For complete deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+## 🔧 Configuration
+
+### Development Environment Variables
 
 #### Backend
 - `PORT` - Backend server port (default: 3001)

@@ -3,7 +3,14 @@ const FormData = require('form-data');
 const fs = require('fs');
 
 class DishAgentSDK {
-  constructor(baseURL = 'http://localhost:3001') {
+  constructor(baseURL) {
+    // Auto-detect production URL if not provided
+    if (!baseURL) {
+      baseURL = process.env.DISH_AGENT_API_URL || 
+                process.env.VITE_API_URL || 
+                'http://localhost:3001';
+    }
+    
     this.baseURL = baseURL;
     this.api = axios.create({
       baseURL,
